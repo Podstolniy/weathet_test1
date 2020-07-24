@@ -24,7 +24,7 @@ mybot = telebot.TeleBot(token)
 @mybot.message_handler(commands=['help'])
 def echo_digits(message: Message):
     mybot.reply_to(message, 'Для того, чтобы узнать текущую '
-                            'погоду в Ярославле, добавте ключ /1')
+                            'погоду в Ярославле, добавьте ключ /1')
     #pass
 
 @mybot.message_handler(commands=['1'])
