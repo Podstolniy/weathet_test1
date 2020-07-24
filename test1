@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+
+import telebot
+from telebot import types
+import requests
+import math
+import datetime
+import  time
+import pyowm
+import geojson
+from telebot.types import Message
+
+
+#name = my_testsweather_bot
+#https://openweathermap.org/api/forecast
+#API openweathermap.org  = weather_test
+
+token = '1378860709:AAGqjKTuBRoFUSd3EmMMWJUJsUNYf3_g9nE'
+weather_test = '474593fb2a2d5efbf6e3fa013e9af2e6'
+mybot = telebot.TeleBot(token)
+
+
+@mybot.message_handler(commands=['help'])
+def echo_digits(message: Message):
+    mybot.reply_to(message, 'Для того, чтобы узнать текущую '
+                            'погоду в Ярославле, добавте ключ /1')
+    #pass
+
+@mybot.message_handler(commands=['1'])
+def weather_map(message: Message):
+    try:
+        payload ={"id": 468902,
+                  "name": "Yaroslavl",
+                  "state": "",
+                  "country": "RU",
+                  "lang": "ru",
+                  'units': 'metric',
+                  "coord":
+                      {
+                          "lon": 39.873676,
+                          "lat": 57.629871
+                      },
+                  'APPID': weather_test,
+                  }
+        res = requests.get("https://api.openweathermap.org/data/2.5/weather?", params = payload)
+        data = res.json()
+        a = "Температура_воздуха:", data['main']['temp'], "|", \
+            data['weather'][0]['description'], "|", \
+            "Атм_давление:", bar_rtut(data['main']['pressure']), "|" \
+            "Влажность_воздуха:", data['main']['humidity']
+        mybot.reply_to(message, str(a))
+
+    except Exception as e:
+        print("Exception (weather):", e)
+        #pass
+
+
+if __name__ == '__main__':
+    mybot.polling(none_stop=True)
